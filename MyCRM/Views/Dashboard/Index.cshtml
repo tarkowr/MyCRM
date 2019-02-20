@@ -1,0 +1,43 @@
+﻿@model MyCRM.Models.DashboardViewModel
+
+@{ 
+    ViewBag.Title = "Dashboard";
+}
+<div>
+    <h2>Dashboard</h2>
+    <p style="color:grey; font-size:1.2em;">Use the Dashboard to view all of your customers in the same place!</p>
+</div>
+
+<hr />
+
+<table class="table table-hover" id="dashboard-table">
+    <tr style="background-color:#eee;">
+        <th>
+            @Html.DisplayNameFor(model => model.Customers)  <a href="~/Customer/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Accounts) <a href="~/Accounts/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Memberships) <a href="~/Membership/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+        </th>
+    </tr>
+    @foreach (var customer in Model.Customers)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => customer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Accounts.SingleOrDefault(a => a.Customers.Contains(customer)).AccountName)
+            </td>
+            <td>
+                @Html.DisplayFor(m => m.Memberships.SingleOrDefault(e => e.CustomerID == customer.ID).MembershipLevel)
+            </td>
+        </tr>
+    }
+</table>
+
+<hr />
+<button class="btn btn-primary" onClick="window.location.reload()">Refresh</button>
+
