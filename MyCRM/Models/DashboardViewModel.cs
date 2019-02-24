@@ -39,5 +39,15 @@ namespace MyCRM.Models
             Accounts = _accounts;
             Memberships = _memberships;
         }
+
+        public Account GetCustomerAccount(Customer customer)
+        {
+            return Accounts.FirstOrDefault(a => a.Customers.Contains(customer));
+        }
+
+        public List<Membership> GetCustomerMemberships(Customer customer)
+        {
+            return Memberships.Where(m => m.CustomerID == customer.ID).ToList();
+        }
     }
 }

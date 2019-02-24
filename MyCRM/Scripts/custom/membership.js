@@ -22,6 +22,6 @@
         }
 
         //Set the price field value
-        $("#price").attr("value", "$"+price);
+        $("#price").attr("value", price);
     });
 });

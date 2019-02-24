@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -15,9 +16,15 @@ namespace MyCRM.Models
 
     public class Membership
     {
-        public int MembershipID { get; set; }   
+        public int MembershipID { get; set; }
+
+        [Display(Name = "Membership Level")]
         public MembershipLevel MembershipLevel { get; set; }
+
+        [Display(Name = "Effective Date")]
         public DateTime? EffectiveDate { get; private set; }
+
+        [Display(Name = "Expiration Date")]
         public DateTime? ExpirationDate { get; private set; }
         public decimal? Price { get; set; }
 
