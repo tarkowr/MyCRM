@@ -4,12 +4,17 @@
     ViewBag.Title = "Memberships";
 }
 
-<h2>Memberships</h2>
+<div>
+    <h2>Memberships</h2>
+    <p style="font-size:1.2em;" class="text-muted">Complete list of Memberships!</p>
+</div>
+
+<hr />
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table table-striped">
+<table class="table table-hover crm-table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Customer.Name)

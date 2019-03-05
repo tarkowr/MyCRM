@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyCRM.Models
 {
@@ -18,6 +19,7 @@ namespace MyCRM.Models
     {
         public int MembershipID { get; set; }
 
+        [Required(ErrorMessage = "Please Select a Membership Level")]
         [Display(Name = "Membership Level")]
         public MembershipLevel MembershipLevel { get; set; }
 
@@ -28,6 +30,7 @@ namespace MyCRM.Models
         public DateTime? ExpirationDate { get; private set; }
         public decimal? Price { get; set; }
 
+        [Index]
         public int CustomerID { get; set; }
         public virtual Customer Customer { get; set; }
 

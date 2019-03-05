@@ -36,3 +36,6 @@ input[type="checkbox"] {
     background-color: #337ab7;
     color: white;
 }
+.crm-table > tbody > tr:first-child{
+    background-color: #eee;
+}

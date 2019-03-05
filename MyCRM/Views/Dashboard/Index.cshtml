@@ -10,8 +10,9 @@
 
 <hr />
 
-<table class="table table-hover" id="dashboard-table">
-    <tr style="background-color:#eee;">
+<table class="table table-hover crm-table">
+    <tr>
+        <th></th>
         <th>
             @Html.DisplayNameFor(model => model.Customers)  <a href="~/Customer/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
         </th>
@@ -24,17 +25,20 @@
     </tr>
     @foreach (var customer in Model.Customers)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(m => customer.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(m => m.GetCustomerAccount(customer).AccountName)
-            </td>
-            <td>
-                @Html.DisplayFor(m => m.Memberships.FirstOrDefault(e => e.CustomerID == customer.ID).MembershipLevel)
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "EditCustomer", new { id = customer.ID })
+        </td>
+        <td>
+            @Html.DisplayFor(m => customer.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.GetCustomerAccount(customer).AccountName)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Memberships.FirstOrDefault(e => e.CustomerID == customer.ID).MembershipLevel)
+        </td>
+    </tr>
     }
 </table>
 
