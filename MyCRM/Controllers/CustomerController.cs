@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using MyCRM.DAL;
 using MyCRM.Models;
+using PagedList;
 
 namespace MyCRM.Controllers
 {
@@ -16,10 +17,14 @@ namespace MyCRM.Controllers
         private DataContext db = new DataContext();
 
         // GET: Customer
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            var customers = db.Customers.Include(c => c.Account);
-            return View(customers.ToList());
+            var customers = db.Customers.Include(c => c.Account).OrderBy(c => c.Name);
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+
+            return View(customers.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Customer/Details/5
@@ -51,11 +56,18 @@ namespace MyCRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,AccountID,Name,Email,Phone")] Customer customer)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Customers.Add(customer);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Customers.Add(customer);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to Save Changes.");
             }
 
             ViewBag.AccountID = new SelectList(db.Accounts, "AccountID", "AccountName", customer.AccountID);
@@ -87,21 +99,33 @@ namespace MyCRM.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(customer).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(customer).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes.");
+                }
             }
             ViewBag.AccountID = new SelectList(db.Accounts, "AccountID", "AccountName", customer.AccountID);
             return View(customer);
         }
 
         // GET: Customer/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete failed. Please try again.";
+            }
+
             Customer customer = db.Customers.Find(id);
             if (customer == null)
             {
@@ -115,10 +139,18 @@ namespace MyCRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Customer customer = db.Customers.Find(id);
-            db.Customers.Remove(customer);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Customer customer = db.Customers.Find(id);
+                db.Customers.Remove(customer);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+
         }
 
         protected override void Dispose(bool disposing)

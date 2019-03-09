@@ -51,15 +51,23 @@ namespace MyCRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "MembershipID,CustomerID,MembershipLevel,EffectiveDate,ExpirationDate,Price")] Membership membership)
         {
-            membership.CalculateMembershipPrice();
-            if (ModelState.IsValid)
+            try
             {
-                db.Memberships.Add(membership);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                membership.CalculateMembershipPrice();
+                if (ModelState.IsValid)
+                {
+                    db.Memberships.Add(membership);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
+                ViewBag.CustomerID = new SelectList(db.Customers, "ID", "Name", membership.CustomerID);
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to Save Changes.");
             }
 
-            ViewBag.CustomerID = new SelectList(db.Customers, "ID", "Name", membership.CustomerID);
             return View(membership);
         }
 
@@ -89,21 +97,33 @@ namespace MyCRM.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(membership).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(membership).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to Save Changes.");
+                }
             }
             ViewBag.CustomerID = new SelectList(db.Customers, "ID", "Name", membership.CustomerID);
             return View(membership);
         }
 
         // GET: Membership/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete failed. Please try again.";
+            }
+
             Membership membership = db.Memberships.Find(id);
             if (membership == null)
             {
@@ -117,10 +137,18 @@ namespace MyCRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Membership membership = db.Memberships.Find(id);
-            db.Memberships.Remove(membership);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Membership membership = db.Memberships.Find(id);
+                db.Memberships.Remove(membership);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
+            }
+
         }
 
         protected override void Dispose(bool disposing)

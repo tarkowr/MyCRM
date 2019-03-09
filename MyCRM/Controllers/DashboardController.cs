@@ -7,6 +7,7 @@ using System.Net;
 using System.Web.Mvc;
 using MyCRM.DAL;
 using MyCRM.Models;
+using PagedList;
 
 namespace MyCRM.Controllers
 {
@@ -15,9 +16,36 @@ namespace MyCRM.Controllers
         private DataContext db = new DataContext();
 
         // GET: Dashboard
-        public ActionResult Index()
+        public ActionResult Index(string order, string searchString)
         {
-            var dashboard = new DashboardViewModel(db.Customers.ToList(), db.Accounts.ToList(), db.Memberships.ToList());
+            // Save the current order
+            ViewBag.CurrentSort = order;
+
+            // Set default order
+            ViewBag.CustomerSortParm = String.IsNullOrEmpty(order) ? "name_desc" : "";
+
+            // Get all customers
+            var customers = from c in db.Customers
+                            select c;
+
+            // Filter customers or accounts by search query
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(c => c.Name.Contains(searchString) || c.Account.AccountName.Contains(searchString));
+            }
+
+            // Order Customers by Name
+            switch (order)
+            {
+                case "name_desc":
+                    customers = customers.OrderByDescending(c => c.Name);
+                    break;
+                default:
+                    customers = customers.OrderBy(c => c.Name);
+                    break;
+            }
+        
+            var dashboard = new DashboardViewModel(customers.ToList(), db.Accounts.ToList(), db.Memberships.ToList());
             return View(dashboard);
         }
 

@@ -1,4 +1,7 @@
-﻿@model IEnumerable<MyCRM.Models.Customer>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<MyCRM.Models.Customer>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Customers";
@@ -17,16 +20,20 @@
 <table class="table table-hover crm-table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Account.AccountName)
+            @*@Html.DisplayNameFor(model => model.Account.AccountName)*@
+            @Html.DisplayName("Account Name")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @*@Html.DisplayNameFor(model => model.Name)*@
+            @Html.DisplayName("Name")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @*@Html.DisplayNameFor(model => model.Email)*@
+            @Html.DisplayName("Email")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Phone)
+            @*@Html.DisplayNameFor(model => model.Phone)*@
+            @Html.DisplayName("Phone")
         </th>
         <th></th>
     </tr>
@@ -55,3 +62,8 @@
     }
 
 </table>
+
+<br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))

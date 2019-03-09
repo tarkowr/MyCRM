@@ -49,11 +49,18 @@ namespace MyCRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "AccountID,AccountName,Organization")] Account account)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Accounts.Add(account);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.Accounts.Add(account);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (DataException)
+            {
+                ModelState.AddModelError("", "Unable to save changes.");
             }
 
             return View(account);
@@ -83,20 +90,32 @@ namespace MyCRM.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(account).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(account).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DataException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes.");
+                }
             }
             return View(account);
         }
 
         // GET: Accounts/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, bool? saveChangesError=false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewBag.ErrorMessage = "Delete failed. Please try again.";
+            }
+
             Account account = db.Accounts.Find(id);
             if (account == null)
             {
@@ -110,10 +129,18 @@ namespace MyCRM.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Account account = db.Accounts.Find(id);
-            db.Accounts.Remove(account);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                Account account = db.Accounts.Find(id);
+                db.Accounts.Remove(account);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (DataException)
+            {
+                return RedirectToAction("Delete", new { id = id, saveChangesError = false });
+            }
+
         }
 
         protected override void Dispose(bool disposing)

@@ -10,11 +10,21 @@
 
 <hr />
 
+@using (Html.BeginForm())
+{
+    <p>
+        @Html.TextBox("SearchString", "", new { @placeholder = "Search", @class="search-input" })
+        <input class="search-btn" type="submit" value="Search"/>
+    </p>
+}
+
+<hr />
+
 <table class="table table-hover crm-table">
     <tr>
         <th></th>
         <th>
-            @Html.DisplayNameFor(model => model.Customers)  <a href="~/Customer/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+            @Html.ActionLink("Customer", "Index", new { order = ViewBag.CustomerSortParm })  <a href="~/Customer/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Accounts) <a href="~/Accounts/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
@@ -43,5 +53,4 @@
 </table>
 
 <hr />
-<button class="btn btn-primary" onClick="window.location.reload()">Refresh</button>
 
