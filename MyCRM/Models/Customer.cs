@@ -19,7 +19,8 @@ namespace MyCRM.Models
         [MaxLength(100)]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Invalid Email Address")]
+        [Required(ErrorMessage = "Email is Required.")]
+        [RegularExpression("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$", ErrorMessage = "Invalid Email.")]
         [MaxLength(100)]
         public string Email { get; set; }
 

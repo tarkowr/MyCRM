@@ -5,7 +5,7 @@
 }
 <div>
     <h2>Dashboard</h2>
-    <p style="font-size:1.2em;" class="text-muted">Use the Dashboard to view all of your customers in the same place!</p>
+    <p class="text-muted">Use the Dashboard to view all of your customers and accounts in the same place!</p>
 </div>
 
 <hr />
@@ -13,24 +13,24 @@
 @using (Html.BeginForm())
 {
     <p>
-        @Html.TextBox("SearchString", "", new { @placeholder = "Search", @class="search-input" })
-        <input class="search-btn" type="submit" value="Search"/>
+        @Html.TextBox("SearchString", "", new { @placeholder = "Search Customers...", @class="search-input" })
+        <input class="btn btn-outline-primary ml-1 px-3" style="margin-top: -4px; padding-top: 5px; padding-bottom: 6px;" type="submit" value="Go!"/>
     </p>
 }
 
 <hr />
 
-<table class="table table-hover crm-table">
+<table class="table crm-table">
     <tr>
         <th></th>
         <th>
-            @Html.ActionLink("Customer", "Index", new { order = ViewBag.CustomerSortParm })  <a href="~/Customer/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+            @Html.ActionLink("Customer", "Index", new { order = ViewBag.CustomerSortParm })  <a href="~/Customer/Create" class="dashboard-icon"><i class="fa fa-plus-square fa-lg plus-icon"></i></a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Accounts) <a href="~/Accounts/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+            @Html.DisplayNameFor(model => model.Accounts) <a href="~/Accounts/Create" class="dashboard-icon"><i class="fa fa-plus-square fa-lg plus-icon"></i></a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Memberships) <a href="~/Membership/Create" target="_blank" class="dashboard-icon"><span class="glyphicon glyphicon-plus"></span></a>
+            @Html.DisplayNameFor(model => model.Memberships) <a href="~/Membership/Create" class="dashboard-icon"><i class="fa fa-plus-square fa-lg plus-icon"></i></a>
         </th>
     </tr>
     @foreach (var customer in Model.Customers)

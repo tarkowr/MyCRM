@@ -1,4 +1,7 @@
-﻿@model IEnumerable<MyCRM.Models.Membership>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<MyCRM.Models.Membership>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Memberships";
@@ -6,10 +9,18 @@
 
 <div>
     <h2>Memberships</h2>
-    <p style="font-size:1.2em;" class="text-muted">Complete list of Memberships!</p>
+    <p class="text-muted">Your complete list of Customer Memberships!</p>
 </div>
 
 <hr />
+
+@using (Html.BeginForm("Index", "Membership", FormMethod.Get))
+{
+    <p>
+        @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @placeholder = "Search Memberships...", @class = "search-input" })
+        <input class="btn btn-outline-primary ml-1 px-3" style="margin-top: -4px; padding-top: 5px; padding-bottom: 6px;" type="submit" value="Go!" />
+    </p>
+}
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -17,46 +28,56 @@
 <table class="table table-hover crm-table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Customer.Name)
+            @*@Html.DisplayNameFor(model => model.Customer.Name)*@
+            @Html.DisplayName("Customer Name")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.MembershipLevel)
+            @*@Html.DisplayNameFor(model => model.MembershipLevel)*@
+            @Html.DisplayName("Membership Level")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.EffectiveDate)
+            @*@Html.DisplayNameFor(model => model.EffectiveDate)*@
+            @Html.DisplayName("Effective Date")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ExpirationDate)
+            @*@Html.DisplayNameFor(model => model.ExpirationDate)*@
+            @Html.DisplayName("Expiration Date")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
+            @*@Html.DisplayNameFor(model => model.Price)*@
+            @Html.DisplayName("Price")
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Customer.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MembershipLevel)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EffectiveDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ExpirationDate)
-        </td>
-        <td>
-            $@Html.DisplayFor(modelItem => item.Price)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.MembershipID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.MembershipID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.MembershipID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MembershipLevel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EffectiveDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                $@Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.MembershipID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.MembershipID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MembershipID })
+            </td>
+        </tr>
+    }
 
 </table>
+<br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))

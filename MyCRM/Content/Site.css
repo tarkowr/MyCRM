@@ -1,12 +1,30 @@
-﻿body {
+﻿html, body{
+    height: 100vh;
+    max-width: 100vw;
+}
+body {
     padding-top: 50px;
     padding-bottom: 20px;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+}
+.margin-offset {
+    margin-top: -15px;
+}
+.weight-strong {
+    font-weight: 600;
+}
+.plus-icon {
+    background-color: white;
+    margin-left: 5px;
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    padding-top: 15px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -36,30 +54,34 @@ input[type="checkbox"] {
     background-color: #337ab7;
     color: white;
 }
-.crm-table > tbody > tr:first-child{
-    background-color: #f2f2f2;
+.crm-table > tbody > tr:first-child {
+    background-color: #f9f9f9;
 }
-.search-btn {
-    border-radius: 4px;
-    background-color: #337ab7;
-    color: white;
-    border: 1px solid #2e6da4;
-    padding: 5px 10px;
-    margin-left: 15px;
-}
-.search-btn:hover {
-    background-color: #2e6da4;
+.crm-table > tbody > tr:hover {
+    background-color: #f9f9f9;
 }
 
-.search-input{
-    border-radius: 0px;
+/* Search Input Box */
+.search-input {
+    border-radius: 4px;
     border: 1px solid #808080;
     padding: 5px 10px;
+    transition: border-radius .5s;
 }
 .search-input:hover{
     border-radius: 20px;
-    transition: border-radius .5s;
 }
 .search-input:focus{
     outline: none;
+}
+
+/* Home Styles */
+.home-intro {
+    background: url('home-image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }

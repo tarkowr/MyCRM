@@ -2,24 +2,51 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyCRM.DAL;
 using MyCRM.Models;
+using PagedList;
 
 namespace MyCRM.Controllers
 {
+    [Authorize]
     public class MembershipController : Controller
     {
         private DataContext db = new DataContext();
 
         // GET: Membership
-        public ActionResult Index()
+        public ActionResult Index(int? page, string currentFilter, string searchString)
         {
-            var memberships = db.Memberships.Include(m => m.Customer);
-            return View(memberships.ToList());
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var memberships = from m in db.Memberships
+                            select m;
+
+            // Filter by search query
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                memberships = memberships.Where(m => m.Customer.Name.Contains(searchString));
+            }
+
+            memberships = memberships.Include(m => m.Customer).OrderBy(m => m.Customer.Name);
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+
+            return View(memberships.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Membership/Details/5
@@ -63,7 +90,7 @@ namespace MyCRM.Controllers
 
                 ViewBag.CustomerID = new SelectList(db.Customers, "ID", "Name", membership.CustomerID);
             }
-            catch (DataException)
+            catch (RetryLimitExceededException)
             {
                 ModelState.AddModelError("", "Unable to Save Changes.");
             }
@@ -103,7 +130,7 @@ namespace MyCRM.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch (DataException)
+                catch (RetryLimitExceededException)
                 {
                     ModelState.AddModelError("", "Unable to Save Changes.");
                 }
@@ -144,7 +171,7 @@ namespace MyCRM.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (DataException)
+            catch (RetryLimitExceededException)
             {
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }

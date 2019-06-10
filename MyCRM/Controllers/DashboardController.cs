@@ -8,9 +8,12 @@ using System.Web.Mvc;
 using MyCRM.DAL;
 using MyCRM.Models;
 using PagedList;
+using System.Data;
+using System.Data.Entity.Infrastructure;
 
 namespace MyCRM.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
         private DataContext db = new DataContext();
@@ -55,9 +58,16 @@ namespace MyCRM.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(customer).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(customer).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (RetryLimitExceededException)
+                {
+                    ModelState.AddModelError("", "Unable to save changes.");
+                }
             }
 
             return View(customer);

@@ -1,4 +1,7 @@
-﻿@model IEnumerable<MyCRM.Models.Account>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<MyCRM.Models.Account>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Accounts";
@@ -6,10 +9,18 @@
 
 <div>
     <h2>Accounts</h2>
-    <p style="font-size:1.2em;" class="text-muted">Complete list of Accounts!</p>
+    <p class="text-muted">Your complete list of Customer Accounts!</p>
 </div>
 
 <hr />
+
+@using (Html.BeginForm("Index", "Accounts", FormMethod.Get))
+{
+    <p>
+        @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @placeholder = "Search Accounts...", @class = "search-input" })
+        <input class="btn btn-outline-primary ml-1 px-3" style="margin-top: -4px; padding-top: 5px; padding-bottom: 6px;" type="submit" value="Go!" />
+    </p>
+}
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -17,10 +28,12 @@
 <table class="table table-hover crm-table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.AccountName)
+            @*@Html.DisplayNameFor(model => model.AccountName)*@
+            @Html.DisplayName("Account Name")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Organization)
+            @*@Html.DisplayNameFor(model => model.Organization)*@
+            @Html.DisplayName("Organization?")
         </th>
         <th></th>
     </tr>
@@ -43,3 +56,8 @@
     }
 
 </table>
+
+<br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))

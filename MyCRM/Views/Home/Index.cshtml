@@ -1,30 +1,83 @@
 ﻿@{
-    ViewBag.Title = "Home";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - MyCRM</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="border-bottom: 1px solid #6c757d;">
+        @Html.ActionLink("MyCRM", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <ul class="navbar-nav">
+                <li>@Html.ActionLink("Home", "Index", "Home", null, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("About", "About", "Home", null, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("Contact", "Contact", "Home", null, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("Dashboard", "Index", "Dashboard", null, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("Customers", "Index", "Customer", null, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("Accounts", "Index", "Accounts", null, new { @class = "nav-link" })</li>
+                <li>@Html.ActionLink("Memberships", "Index", "Membership", null, new { @class = "nav-link" })</li>
+            </ul>
+            <ul class="nav navbar-nav ml-auto">
+                <li><a href="mailto:team@mycrm.com"><span class="glyphicon glyphicon-envelope"></span></a></li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </nav>
 
-<div class="jumbotron">
-    <h1>MyCRM</h1>
-    <p class="lead text-muted">MyCRM is a simple, yet powerful CRM service in the cloud. It is designed to work with companies of all sizes within most industries.</p> <br />
-    <a class="btn btn-primary" href="/Dashboard">Get Started &raquo;</a>
-</div>
+    <div>
+        <div class="home-intro">
+            <div class="container d-flex h-100">
+                <div class="py-5 px-3 card justify-content-center align-self-center w-100 text-center" style="background-color: rgba(40, 40, 40, .9); border: 2px solid black; border-radius: 10px;">
+                    <h1 class="text-white text-center display-3">MyCRM</h1>
+                    <p class="lead text-white text-center">
+                        MyCRM is a simple, yet powerful CRM service in the cloud. <br />
+                        It is designed to work with companies of all sizes within most industries.
+                    </p> <br />
+                    <a class="btn btn-primary py-2" style="width: 150px; display: inline-block; margin: 0 auto;" href="/Dashboard">Get Started &raquo;</a>
+                </div>
+            </div>
+        </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Welcome!</h2>
-        <p>
-            Welcome to your MyCRM Home page. From here, you can access your Customers, Accounts, and more through the navigation bar on the top of your screen.
-        </p>
+        <div class="container-fluid px-5" style="border-top: 1px solid #d3d3d3;">
+            <div class="row mt-4 px-3">
+
+                <div class="col-md-4">
+                    <h2 style="font-weight:300;">Welcome!</h2>
+                    <p class="text-secondary">
+                        Welcome to your MyCRM Home page. From here, you can view your organization's Customers, Accounts, and Memberships!
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h2 style="font-weight:300;">Getting Started</h2>
+                    <p class="text-secondary">
+                        To start adding your customers to MyCRM, go to <a href="/customer" class="text-primary">Customers</a>. To view all of the customer accounts in one place, visit <a href="/customer" class="text-primary">Accounts</a>.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h2 style="font-weight:300;">What's Next?</h2>
+                    <p class="text-secondary">
+                        Keep an eye out for our biannual (Summer and Winter) updates to MyCRM. These updates will introduce new features to enhance your experience.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <footer>
+            <p class="pl-3">&copy; @DateTime.Now.Year - MyCRM</p>
+        </footer>
     </div>
-    <div class="col-md-4">
-        <h2>Getting Started</h2>
-        <p>
-            To start adding your customers to MyCRM, go to <strong>Customers</strong>. To view all of the customer accounts in one place, visit <strong>Accounts</strong>.
-        </p>
-    </div>
-    <div class="col-md-4">
-        <h2>What's Next?</h2>
-        <p>
-            Keep an eye out for our biannual (Summer and Winter) updates to MyCRM. These updates will introduce new features to enhance your experience with our product.
-        </p>
-    </div>
-</div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

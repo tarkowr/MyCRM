@@ -9,17 +9,39 @@ using System.Web.Mvc;
 using MyCRM.DAL;
 using MyCRM.Models;
 using PagedList;
+using System.Data.Entity.Infrastructure;
 
 namespace MyCRM.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         private DataContext db = new DataContext();
 
         // GET: Customer
-        public ActionResult Index(int? page)
+        public ActionResult Index(int? page, string currentFilter, string searchString)
         {
-            var customers = db.Customers.Include(c => c.Account).OrderBy(c => c.Name);
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var customers = from c in db.Customers
+                            select c;
+
+            // Filter customers or accounts by search query
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(c => c.Name.Contains(searchString));
+            }
+
+            customers = customers.Include(c => c.Account).OrderBy(c => c.Name);
 
             int pageSize = 5;
             int pageNumber = (page ?? 1);
@@ -65,7 +87,7 @@ namespace MyCRM.Controllers
                     return RedirectToAction("Index");
                 }
             }
-            catch (DataException)
+            catch (RetryLimitExceededException)
             {
                 ModelState.AddModelError("", "Unable to Save Changes.");
             }
@@ -105,7 +127,7 @@ namespace MyCRM.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch (DataException)
+                catch (RetryLimitExceededException)
                 {
                     ModelState.AddModelError("", "Unable to save changes.");
                 }
@@ -146,7 +168,7 @@ namespace MyCRM.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (DataException)
+            catch (RetryLimitExceededException)
             {
                 return RedirectToAction("Delete", new { id = id, saveChangesError = true });
             }

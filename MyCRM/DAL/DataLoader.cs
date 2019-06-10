@@ -7,7 +7,7 @@ using System.Data.Entity;
 
 namespace MyCRM.DAL
 {
-    public class DataLoader : DropCreateDatabaseIfModelChanges<DataContext> //TODO: Change back to CreateDrop DB on Model Change
+    public class DataLoader : DropCreateDatabaseAlways<DataContext>
     {
         protected override void Seed(DataContext context)
         {
@@ -68,7 +68,5 @@ namespace MyCRM.DAL
                 Console.WriteLine(ex.Message);
             }
         }
-
-
     }
 }
